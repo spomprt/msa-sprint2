@@ -1,0 +1,16 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+title Онлайн-платформа "Hotelio"
+
+LAYOUT_WITH_LEGEND()
+
+Person(user, "Пользователь", "Взаимодействует с системой")
+
+System_Boundary(sys, "Онлайн-платформа для бронирования отелей и апартаментов") {
+    System(hotelio, "Система", "Хранение данных, API")
+}
+
+Rel(user, hotelio, "Бронирование отелей, апартаментов")
+
+@enduml

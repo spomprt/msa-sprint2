@@ -1,0 +1,22 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+LAYOUT_WITH_LEGEND()
+
+System_Boundary(central, "Платформа бронирования отелей и апартаментов") {
+  Container(web, "Web Application", "React, HTML, CSS", "Позволяет просматривать отели, апартаменты")
+  Container(monolith, "Hotelio Monolith", "REST", "Бронирование отелей, апартаментов, промокоды, работа с пользователями")
+  ContainerDb(monolith_db, "Hotelio Monolith DB", "Relational DB", "База данных монолита")
+  Container(user_service, "User Service", "REST", "Операции с пользователями")
+  ContainerDb(user_db, "User Service DB", "Relational DB", "База данных сервиса пользователей")
+}
+
+Person(user, "Пользователь", "Бронирует отели и апартаменты")
+
+Rel(user, web, "Использует", "HTTPS")
+Rel(web, monolith, "Бронирование отелей, апартаментов, отзывы", "REST/JSON")
+Rel(web, user_service, "Получение профиля, информации о пользователе", "REST/JSON")
+Rel(monolith, monolith_db, "Читает и пишет", "JDBC")
+Rel(monolith, user_service, "Получение информации о пользователе", "REST/JSON")
+Rel(user_service, user_db, "Читает и пишет", "JDBC")
+
+@enduml
