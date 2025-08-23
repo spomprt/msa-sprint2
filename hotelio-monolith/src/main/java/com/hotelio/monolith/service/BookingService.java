@@ -1,14 +1,18 @@
 package com.hotelio.monolith.service;
 
+import java.time.Instant;
+import java.util.List;
+import java.util.Optional;
+
 import com.hotelio.monolith.entity.Booking;
 import com.hotelio.monolith.entity.PromoCode;
+import com.hotelio.monolith.grpc.BookingGrpcClient;
 import com.hotelio.monolith.repository.BookingRepository;
+import com.hotelio.proto.booking.BookingListResponse;
+import com.hotelio.proto.booking.BookingResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class BookingService {
@@ -20,27 +24,89 @@ public class BookingService {
     private final ReviewService reviewService;
     private final AppUserService userService;
     private final HotelService hotelService;
+    private final BookingGrpcClient grpcClient;
 
     public BookingService(
             BookingRepository bookingRepository,
             PromoCodeService promoCodeService,
             ReviewService reviewService,
             AppUserService userService,
-            HotelService hotelService
+            HotelService hotelService,
+            BookingGrpcClient grpcClient
     ) {
         this.bookingRepository = bookingRepository;
         this.promoCodeService = promoCodeService;
         this.reviewService = reviewService;
         this.userService = userService;
         this.hotelService = hotelService;
+        this.grpcClient = grpcClient;
     }
 
     public List<Booking> listAll(String userId) {
-        return userId != null ? bookingRepository.findByUserId(userId) : bookingRepository.findAll();
+        log.info("Listing bookings with userId={}", userId);
+        BookingListResponse response = grpcClient.listBookings(userId);
+        return response.getBookingsList().stream()
+                .map(grpcResponse -> {
+                    Booking booking = new Booking();
+                    booking.setUserId(grpcResponse.getUserId());
+                    booking.setHotelId(grpcResponse.getHotelId());
+                    // Обрабатываем nullable promoCode
+                    if (grpcResponse.hasPromoCode()) {
+                        booking.setPromoCode(grpcResponse.getPromoCode().getValue());
+                    } else {
+                        booking.setPromoCode(null);
+                    }
+                    booking.setDiscountPercent(grpcResponse.getDiscountPercent());
+                    booking.setPrice(grpcResponse.getPrice());
+                    try {
+                        booking.setCreatedAt(Instant.parse(grpcResponse.getCreatedAt()));
+                    } catch (Exception e) {
+                        booking.setCreatedAt(null);
+                    }
+                    return booking;
+                })
+                .toList();
     }
 
     public Booking createBooking(String userId, String hotelId, String promoCode) {
-        log.info("Creating booking: userId={}, hotelId={}, promoCode={}", userId, hotelId, promoCode);
+        log.info("Creating booking via gRPC: userId={}, hotelId={}, promoCode={}", userId, hotelId, promoCode);
+
+        // Perform validation before calling gRPC
+        validateUser(userId);
+        validateHotel(hotelId);
+
+        try {
+            // Вызываем микросервис через gRPC
+            BookingResponse grpcResponse = grpcClient.createBooking(userId, hotelId, promoCode);
+
+            // Создаем локальную сущность для совместимости
+            Booking booking = new Booking();
+            // ID будет сгенерирован автоматически
+            booking.setUserId(grpcResponse.getUserId());
+            booking.setHotelId(grpcResponse.getHotelId());
+            // Обрабатываем nullable promoCode
+            if (grpcResponse.hasPromoCode()) {
+                booking.setPromoCode(grpcResponse.getPromoCode().getValue());
+            } else {
+                booking.setPromoCode(null);
+            }
+            booking.setDiscountPercent(grpcResponse.getDiscountPercent());
+            booking.setPrice(grpcResponse.getPrice());
+            booking.setCreatedAt(Instant.now());
+
+            // Сохраняем в локальную БД для совместимости
+            return bookingRepository.save(booking);
+
+        } catch (Exception e) {
+            log.error("Failed to create booking via gRPC, falling back to local logic", e);
+
+            // Fallback на локальную логику при ошибке gRPC
+            return createBookingLocal(userId, hotelId, promoCode);
+        }
+    }
+
+    private Booking createBookingLocal(String userId, String hotelId, String promoCode) {
+        log.info("Creating booking locally: userId={}, hotelId={}, promoCode={}", userId, hotelId, promoCode);
 
         validateUser(userId);
         validateHotel(hotelId);
@@ -100,7 +166,9 @@ public class BookingService {
     }
 
     private double resolvePromoDiscount(String promoCode, String userId) {
-        if (promoCode == null) return 0.0;
+        if (promoCode == null) {
+            return 0.0;
+        }
 
         PromoCode promo = promoCodeService.validate(promoCode, userId);
         if (promo == null) {
