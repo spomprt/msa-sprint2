@@ -1,0 +1,13 @@
+bkhafizull@MacBook-Pro-Bari task3 % docker ps
+CONTAINER ID   IMAGE                             COMMAND                  CREATED         STATUS                  PORTS                                                           NAMES
+6bc64ece1546   task3_apollo-gateway              "docker-entrypoint.s…"   4 minutes ago   Up 4 minutes            0.0.0.0:4000->4000/tcp, :::4000->4000/tcp                       task3_apollo-gateway_1
+5a5897ee92f7   task3_booking-subgraph            "docker-entrypoint.s…"   4 minutes ago   Up 4 minutes            0.0.0.0:4001->4001/tcp, :::4001->4001/tcp                       task3_booking-subgraph_1
+92156cd39832   task3_hotel-subgraph              "docker-entrypoint.s…"   4 minutes ago   Up 4 minutes            0.0.0.0:4002->4002/tcp, :::4002->4002/tcp                       task3_hotel-subgraph_1
+fbda94c8cc55   task2_booking-history-service     "java -jar app.jar"      11 hours ago    Up 11 hours             8081/tcp                                                        booking-history-service
+e6e20334ee36   task2_booking-service             "java -jar target/bo…"   11 hours ago    Up 11 hours             0.0.0.0:9090->9090/tcp, :::9090->9090/tcp                       booking-service
+fbd60ad04e25   confluentinc/cp-zookeeper:7.2.1   "/etc/confluent/dock…"   11 hours ago    Up 11 hours             2888/tcp, 0.0.0.0:2181->2181/tcp, :::2181->2181/tcp, 3888/tcp   task2_zookeeper_1
+c574792ff812   postgres:15                       "docker-entrypoint.s…"   11 hours ago    Up 11 hours             0.0.0.0:5432->5432/tcp, :::5432->5432/tcp                       hotelio-db
+217dcd69e0aa   confluentinc/cp-kafka:7.2.1       "/etc/confluent/dock…"   11 hours ago    Up 11 hours             0.0.0.0:9092->9092/tcp, :::9092->9092/tcp                       task2_kafka_1
+7c79272ee6f0   postgres:15                       "docker-entrypoint.s…"   11 hours ago    Up 11 hours (healthy)   0.0.0.0:6432->5432/tcp, :::6432->5432/tcp                       booking-db
+52576e4cc100   task2_monolith                    "java -jar app.jar"      11 hours ago    Up 11 hours             0.0.0.0:8084->8080/tcp, :::8084->8080/tcp                       hotelio-monolith
+8e6dfdbd2338   postgres:15                       "docker-entrypoint.s…"   11 hours ago    Up 11 hours (healthy)   0.0.0.0:7432->5432/tcp, :::7432->5432/tcp                       booking-history-db
