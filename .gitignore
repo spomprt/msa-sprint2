@@ -2,3 +2,5 @@
 
 tasks/task3/hotel-subgraph/node_modules
 tasks/task4/node_modules
+tasks/task5/node_modules
+istio-1.27.0
