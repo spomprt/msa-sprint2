@@ -10,9 +10,28 @@ service:
   port: 80
   targetPort: 8080
 
+featureFlags:
+  enableFeatureX: false
+
 resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 250m
+    memory: 256Mi
 
 livenessProbe:
+  httpGet:
+    path: /ping
+    port: 8080
+  initialDelaySeconds: 30
+  periodSeconds: 10
 
 readinessProbe:
+  httpGet:
+    path: /ping
+    port: 8080
+  initialDelaySeconds: 5
+  periodSeconds: 5
 

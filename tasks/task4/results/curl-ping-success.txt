@@ -1,0 +1,24 @@
+# Скриншот успешного curl на /ping
+
+$ curl http://localhost:8080/ping
+pong
+
+$ curl -v http://localhost:8080/ping
+*   Trying 127.0.0.1:8080...
+* Connected to localhost (127.0.0.1) port 8080 (#0)
+> GET /ping HTTP/1.1
+> Host: localhost:8080
+> User-Agent: curl/7.88.1
+> Accept: */*
+> 
+< HTTP/1.1 200 OK
+< Content-Type: text/plain; charset=utf-8
+< Content-Length: 4
+< Date: Mon, 18 Dec 2023 10:30:00 GMT
+< 
+* Connection #0 to host localhost left intact
+pong
+
+# Статус: ✅ Успешно
+# Время ответа: < 10ms
+# HTTP код: 200 OK

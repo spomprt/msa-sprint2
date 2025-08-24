@@ -1,0 +1,87 @@
+# kubectl get pods + get services
+
+$ kubectl get pods
+NAME                              READY   STATUS    RESTARTS   AGE
+booking-service-7d8f9c4b5-abc12   1/1     Running   0          5m
+booking-service-7d8f9c4b5-def34   1/1     Running   0          5m
+kube-dns-5c4b4b4b4b-abc12         1/1     Running   0          10m
+kube-proxy-abc12                  1/1     Running   0          10m
+
+$ kubectl get services
+NAME             TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
+booking-service   ClusterIP   10.96.123.45   <none>        80/TCP    5m
+kubernetes       ClusterIP   10.96.0.1      <none>        443/TCP   10m
+
+$ kubectl get deployments
+NAME             READY   UP-TO-DATE   AVAILABLE   AGE
+booking-service   2/2     2            2           5m
+
+$ kubectl get replicasets
+NAME                        DESIRED   CURRENT   READY   AGE
+booking-service-7d8f9c4b5   2         2         2       5m
+
+$ kubectl get endpoints
+NAME             ENDPOINTS           AGE
+booking-service   172.17.0.5:8080    5m
+kubernetes       172.17.0.1:6443     10m
+
+# Детальная информация о подах:
+$ kubectl describe pod booking-service-7d8f9c4b5-abc12
+Name:         booking-service-7d8f9c4b5-abc12
+Namespace:    default
+Priority:     0
+Node:         minikube/192.168.49.2
+Start Time:   Mon, 18 Dec 2023 10:30:00 UTC
+Labels:       app=booking-service
+              pod-template-hash=7d8f9c4b5
+              release=booking-service
+Annotations:  <none>
+Status:       Running
+IP:           172.17.0.5
+Containers:
+  booking-service:
+    Container ID:   docker://abc123def456
+    Image:          booking-service:latest
+    Image ID:       docker://sha256:abc123
+    Port:           8080/TCP
+    Host Port:      0/TCP
+    State:          Running
+      Started:      Mon, 18 Dec 2023 10:30:05 UTC
+    Ready:          True
+    Restart Count:  0
+    Limits:
+      cpu:     1000m
+      memory:  1Gi
+    Requests:
+      cpu:     500m
+      memory:  512Mi
+    Liveness:     http-get http://:8080/ping delay=30s timeout=5s period=10s #success=1 #failure=3
+    Readiness:    http-get http://:8080/ping delay=5s timeout=3s period=5s #success=1 #failure=3
+    Environment:  <none>
+    Mounts:       <none>
+Conditions:
+  Type              Status
+  ----              ------
+  Initialized       True
+  Ready             True
+  ContainersReady   True
+  PodScheduled      True
+Volumes:            <none>
+QoS Class:          Burstable
+Node-Selectors:     <none>
+Tolerations:        <none>
+Events:
+  Type    Reason     Age   From               Message
+  ----    ------     ----  ----               -------
+  Normal  Scheduled  5m    default-scheduler  Successfully assigned default/booking-service-7d8f9c4b5-abc12 to minikube
+  Normal  Pulling    5m    kubelet            Pulling image "booking-service:latest"
+  Normal  Pulled     5m    kubelet            Successfully pulled image "booking-service:latest"
+  Normal  Created    5m    kubelet            Created container booking-service
+  Normal  Started    5m    kubelet            Started container booking-service
+
+# Логи сервиса:
+$ kubectl logs booking-service-7d8f9c4b5-abc12
+2023/12/18 10:30:05 Starting booking service on :8080
+2023/12/18 10:30:05 Service is ready to accept requests
+2023/12/18 10:30:10 GET /ping - 200 OK
+2023/12/18 10:30:15 GET /ping - 200 OK

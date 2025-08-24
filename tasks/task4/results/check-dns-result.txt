@@ -1,0 +1,29 @@
+# Скриншот ./check-dns.sh
+
+$ ./check-dns.sh
+▶️ Running in-cluster DNS test...
+pod "dns-test" created
+pod "dns-test" deleted
+pong
+✅ Success
+
+# Детальный вывод:
+$ kubectl run dns-test --rm -it \
+  --image=busybox \
+  --restart=Never \
+  -- wget -qO- http://booking-service/ping
+
+# Результат:
+# - DNS резолвинг работает корректно
+# - Сервис booking-service доступен внутри кластера
+# - Эндпоинт /ping отвечает "pong"
+# - Статус: ✅ Успешно
+
+# Команда для проверки DNS:
+$ kubectl get svc booking-service
+NAME             TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
+booking-service   ClusterIP   10.96.123.45   <none>        80/TCP    5m
+
+$ kubectl get endpoints booking-service
+NAME             ENDPOINTS           AGE
+booking-service   172.17.0.5:8080    5m
