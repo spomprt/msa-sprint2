@@ -1,0 +1,51 @@
+bkhafizull@MacBook-Pro-Bari task5 % ./test-routing.sh
+=== Тестирование маршрутизации booking-service ===
+
+1. Тест feature flag маршрутизации:
+   Без заголовка X-Feature-Enabled:
+   Request 1: pong from v1
+   Request 2: pong from v1
+   Request 3: pong from v1
+   Request 4: pong from v1
+   Request 5: pong from v2
+
+   С заголовком X-Feature-Enabled: true:
+   Request 1: pong from v2 with feature X enabled!
+   Request 2: pong from v2 with feature X enabled!
+   Request 3: pong from v2 with feature X enabled!
+   Request 4: pong from v2 with feature X enabled!
+   Request 5: pong from v2 with feature X enabled!
+
+2. Тест canary маршрутизации (20 запросов):
+   Request 1: pong from v1
+   Request 2: pong from v1
+   Request 3: pong from v1
+   Request 4: pong from v1
+   Request 5: pong from v1
+   Request 6: pong from v1
+   Request 7: pong from v1
+   Request 8: pong from v2
+   Request 9: pong from v1
+   Request 10: pong from v1
+   Request 11: pong from v1
+   Request 12: pong from v1
+   Request 13: pong from v1
+   Request 14: pong from v1
+   Request 15: pong from v1
+   Request 16: pong from v1
+   Request 17: pong from v1
+   Request 18: pong from v1
+   Request 19: pong from v1
+   Request 20: pong from v1
+
+3. Статистика распределения трафика:
+   v1: 19 запросов
+   v2: 1 запросов
+   Ожидаемое распределение: v1 (90%), v2 (10%)
+
+4. Тест health check:
+OK
+5. Тест версии:
+Version: v1
+
+=== Тестирование завершено ===

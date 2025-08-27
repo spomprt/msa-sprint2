@@ -1,0 +1,54 @@
+replicaCount: 2
+
+image:
+  name: booking-service
+  tag: v1
+  pullPolicy: Never
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+
+featureFlags:
+  enableFeatureX: false
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 50m
+    memory: 64Mi
+
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 8080
+  initialDelaySeconds: 5
+  periodSeconds: 10
+
+readinessProbe:
+  httpGet:
+    path: /health
+    port: 8080
+  initialDelaySeconds: 5
+  periodSeconds: 5
+
+startupProbe:
+  httpGet:
+    path: /health
+    port: 8080
+  initialDelaySeconds: 10
+  periodSeconds: 3
+  failureThreshold: 30
+
+env:
+  - name: VERSION
+    value: "v1"
+  - name: ENABLE_FEATURE_X
+    value: "false"
+
+labels:
+  app: booking-service
+  version: v1

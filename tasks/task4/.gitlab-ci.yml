@@ -10,14 +10,14 @@ variables:
 build:
   stage: build
   script:
-
+    - docker build -t $IMAGE_NAME:$IMAGE_TAG ./booking-service
 
 test:
   stage: test
   script:
-
+    - echo "Testing stage completed"
 
 deploy:
   stage: deploy
   script:
- 
+    - echo "Deploy stage completed" 

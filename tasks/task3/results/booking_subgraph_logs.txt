@@ -1,0 +1,74 @@
+🔍 Fetching bookings for user: test-user-2
+
+🔍 Context: exists
+
+🔍 Headers: [
+
+  'content-type',
+
+  'accept',
+
+  'content-length',
+
+  'user-agent',
+
+  'accept-encoding',
+
+  'host',
+
+  'connection'
+
+]
+
+🔐 Authenticated user: undefined
+
+🔍 Fetching bookings for user: test-user-2
+
+✅ Found 5 bookings for user test-user-2
+
+📡 Booking subgraph received headers: [
+
+  'content-type',
+
+  'accept',
+
+  'content-length',
+
+  'user-agent',
+
+  'accept-encoding',
+
+  'host',
+
+  'connection'
+
+]
+
+🔍 Fetching bookings for user: test-user-3
+
+🔍 Context: exists
+
+🔍 Headers: [
+
+  'content-type',
+
+  'accept',
+
+  'content-length',
+
+  'user-agent',
+
+  'accept-encoding',
+
+  'host',
+
+  'connection'
+
+]
+
+🔐 Authenticated user: undefined
+
+🔍 Fetching bookings for user: test-user-3
+
+✅ Found 3 bookings for user test-user-3
+

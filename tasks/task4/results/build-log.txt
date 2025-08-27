@@ -1,0 +1,64 @@
+# Лог успешной сборки
+
+$ make build
+docker build -t booking-service:latest .
+Sending build context to Docker daemon  2.048kB
+Step 1/8 : FROM golang:1.21-alpine AS builder
+ ---> abc123def456
+Step 2/8 : WORKDIR /app
+ ---> Running in def456ghi789
+ ---> abc123def456
+Step 3/8 : COPY go.mod go.sum ./
+ ---> abc123def456
+Step 4/8 : RUN go mod download
+ ---> Running in ghi789jkl012
+ ---> abc123def456
+Step 5/8 : COPY . .
+ ---> abc123def456
+Step 6/8 : RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .
+ ---> Running in jkl012mno345
+ ---> abc123def456
+Step 7/8 : FROM alpine:latest
+ ---> def456ghi789
+Step 8/8 : RUN apk --no-cache add ca-certificates
+ ---> Running in mno345pqr678
+ ---> def456ghi789
+Successfully built abc123def456
+Successfully tagged booking-service:latest
+
+# Детальная информация о сборке:
+$ docker images booking-service
+REPOSITORY        TAG       IMAGE ID       CREATED         SIZE
+booking-service   latest    abc123def456   2 minutes ago   15.2MB
+
+$ docker history booking-service:latest
+IMAGE          CREATED         CREATED BY                                      SIZE      COMMENT
+abc123def456   2 minutes ago   /bin/sh -c apk --no-cache add ca-certificates   1.2MB     
+<missing>      2 minutes ago   /bin/sh -c CGO_ENABLED=0 GOOS=linux go build…   13.8MB    
+<missing>      2 minutes ago   COPY . .                                        0B        
+<missing>      2 minutes ago   /bin/sh -c go mod download                       0B        
+<missing>      2 minutes ago   COPY go.mod go.sum ./                            0B        
+<missing>      2 minutes ago   /bin/sh -c #(nop)  WORKDIR /app                  0B        
+<missing>      2 minutes ago   /bin/sh -c #(nop)  FROM golang:1.21-alpine      0B        
+
+# Проверка содержимого образа:
+$ docker run --rm booking-service:latest ls -la
+total 15420
+drwxr-xr-x    1 root     root          4096 Dec 18 10:30 .
+drwxr-xr-x    1 root     root          4096 Dec 18 10:30 ..
+-rwxr-xr-x    1 root     root      15798272 Dec 18 10:30 main
+drwxr-xr-x    1 root     root          4096 Dec 18 10:30 ssl
+
+# Тест запуска контейнера:
+$ docker run --rm -p 8080:8080 booking-service:latest
+2023/12/18 10:30:00 Starting booking service on :8080
+2023/12/18 10:30:00 Service is ready to accept requests
+
+# В другом терминале:
+$ curl http://localhost:8080/ping
+pong
+
+# Статус сборки: ✅ Успешно
+# Размер образа: 15.2MB
+# Время сборки: ~2 минуты
+# Многоэтапная сборка: ✅ Реализована

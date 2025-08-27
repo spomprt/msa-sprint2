@@ -1,0 +1,37 @@
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: booking-service-canary
+  namespace: default
+spec:
+  gateways:
+  - booking-service-gateway
+  hosts:
+  - "*"
+  http:
+  - match:
+    - headers:
+        X-Feature-Enabled:
+          exact: "true"
+    name: feature-flag-routing
+    route:
+    - destination:
+        host: booking-service
+        subset: v2
+        port:
+          number: 80
+      weight: 100
+  - name: canary-routing-with-fallback
+    route:
+    - destination:
+        host: booking-service
+        subset: v1
+        port:
+          number: 80
+      weight: 90
+    - destination:
+        host: booking-service
+        subset: v2
+        port:
+          number: 80
+      weight: 10

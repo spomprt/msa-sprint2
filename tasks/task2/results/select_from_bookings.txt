@@ -1,0 +1,19 @@
+from monolith
+
+10,90,2025-08-23 20:49:53.509008 +00:00,5,test-hotel-1,TESTCODE1,test-user-2
+0,80,2025-08-23 20:49:53.509008 +00:00,6,test-hotel-1,,test-user-3
+0,100,2025-08-23 20:49:54.060144 +00:00,7,test-hotel-1,,test-user-3
+10,90,2025-08-23 20:49:54.097440 +00:00,8,test-hotel-1,TESTCODE1,test-user-2
+
+---
+
+from booking_service
+
+10,90,2025-08-23 20:49:53.565717,9,test-hotel-1,TESTCODE1,test-user-1
+10,90,2025-08-23 20:49:53.565717,10,test-hotel-1,TESTCODE1,test-user-2
+0,100,2025-08-23 20:49:53.565717,11,test-hotel-1,,test-user-3
+0,120,2025-08-23 20:49:53.565717,12,test-hotel-2,,test-user-1
+20,96,2025-08-23 20:49:53.565717,13,test-hotel-2,TESTCODE-VIP,test-user-2
+0,80,2025-08-23 20:49:53.565717,14,test-hotel-3,,test-user-3
+0,100,2025-08-23 20:49:54.053537,15,test-hotel-1,,test-user-3
+10,90,2025-08-23 20:49:54.089455,16,test-hotel-1,TESTCODE1,test-user-2

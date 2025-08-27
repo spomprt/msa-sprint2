@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: booking-service
+  grpc:
+    server:
+      port: 9090
+      enable-reflection: true
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:6432/booking}
+    username: ${SPRING_DATASOURCE_USERNAME:booking}
+    password: ${SPRING_DATASOURCE_PASSWORD:booking}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      group-id: ${KAFKA_CONSUMER_GROUP_ID:booking-service-group}
+      auto-offset-reset: earliest
+
+kafka:
+  topic:
+    booking-created: ${KAFKA_TOPIC_BOOKING_CREATED:booking-created}
+
+logging:
+  level:
+    ru.spomprt.bookingservice: DEBUG
+    org.springframework.web: DEBUG
+    org.apache.kafka: DEBUG

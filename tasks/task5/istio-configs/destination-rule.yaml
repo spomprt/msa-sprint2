@@ -1,0 +1,56 @@
+apiVersion: networking.istio.io/v1
+kind: DestinationRule
+metadata:
+  name: booking-service-canary
+  namespace: default
+spec:
+  host: booking-service
+  subsets:
+  - labels:
+      version: v1
+    name: v1
+    trafficPolicy:
+      connectionPool:
+        http:
+          http1MaxPendingRequests: 512
+          maxRequestsPerConnection: 5
+          maxRetries: 2
+        tcp:
+          maxConnections: 50
+      outlierDetection:
+        baseEjectionTime: 15s
+        consecutive5xxErrors: 2
+        interval: 5s
+        maxEjectionPercent: 30
+  - labels:
+      version: v2
+    name: v2
+    trafficPolicy:
+      connectionPool:
+        http:
+          http1MaxPendingRequests: 256
+          maxRequestsPerConnection: 3
+          maxRetries: 1
+        tcp:
+          maxConnections: 30
+      outlierDetection:
+        baseEjectionTime: 10s
+        consecutive5xxErrors: 1
+        interval: 3s
+        maxEjectionPercent: 50
+  trafficPolicy:
+    connectionPool:
+      http:
+        http1MaxPendingRequests: 1024
+        maxRequestsPerConnection: 10
+        maxRetries: 3
+      tcp:
+        connectTimeout: 30ms
+        maxConnections: 100
+    outlierDetection:
+      baseEjectionTime: 30s
+      consecutive5xxErrors: 3
+      consecutiveGatewayErrors: 3
+      interval: 10s
+      maxEjectionPercent: 20
+      minHealthPercent: 50
